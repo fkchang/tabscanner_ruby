@@ -124,7 +124,7 @@ RSpec.describe Tabscanner do
 
     context 'integration test with mocked HTTP' do
       it 'successfully polls for and retrieves result data' do
-        stub_request(:get, "https://api.tabscanner.com/api/2/result/#{token}")
+        stub_request(:get, "https://api.tabscanner.com/api/result/#{token}")
           .with(
             headers: {
               'apikey' => 'test_api_key',
@@ -155,6 +155,33 @@ RSpec.describe Tabscanner do
         expect(result['items']).to be_an(Array)
         expect(result['items'].length).to eq(2)
       end
+    end
+  end
+
+  describe '.get_credits' do
+    before do
+      Tabscanner.configure do |config|
+        config.api_key = 'test_api_key'
+        config.region = 'us'
+      end
+    end
+
+    it 'delegates to Credits.get_credits' do
+      expect(Tabscanner::Credits).to receive(:get_credits)
+        .and_return(150)
+
+      result = Tabscanner.get_credits
+      expect(result).to eq(150)
+    end
+
+    it 'provides the expected public API signature' do
+      # Mock the Credits class to avoid actual HTTP calls
+      allow(Tabscanner::Credits).to receive(:get_credits)
+        .and_return(192)
+
+      result = Tabscanner.get_credits
+      expect(result).to eq(192)
+      expect(result).to be_a(Integer)
     end
   end
 
@@ -190,7 +217,7 @@ RSpec.describe Tabscanner do
         )
 
       # Mock get result
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/#{test_token}")
+      stub_request(:get, "https://api.tabscanner.com/api/result/#{test_token}")
         .to_return(
           status: 200,
           body: JSON.dump({

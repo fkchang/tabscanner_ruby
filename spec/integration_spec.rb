@@ -43,7 +43,7 @@ RSpec.describe 'Integration Tests' do
       expect(token).to eq(test_token)
 
       # Step 2: Poll for results (with processing → complete flow)
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/#{test_token}")
+      stub_request(:get, "https://api.tabscanner.com/api/result/#{test_token}")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -98,7 +98,7 @@ RSpec.describe 'Integration Tests' do
         )
 
       # Mock result polling
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/io_stream_token")
+      stub_request(:get, "https://api.tabscanner.com/api/result/io_stream_token")
         .to_return(
           status: 200,
           body: JSON.dump({
@@ -128,7 +128,7 @@ RSpec.describe 'Integration Tests' do
         )
 
       # Mock multiple polling attempts: processing → processing → complete
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/multi_poll_token")
+      stub_request(:get, "https://api.tabscanner.com/api/result/multi_poll_token")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -212,7 +212,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles processing failures in result workflow', :vcr do
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/failed_token")
+      stub_request(:get, "https://api.tabscanner.com/api/result/failed_token")
         .to_return(
           status: 200,
           body: JSON.dump({
@@ -228,7 +228,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles timeout scenarios', :vcr do
-      stub_request(:get, "https://api.tabscanner.com/api/2/result/timeout_token")
+      stub_request(:get, "https://api.tabscanner.com/api/result/timeout_token")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -262,7 +262,7 @@ RSpec.describe 'Integration Tests' do
             headers: { 'Content-Type' => 'application/json' }
           )
 
-        stub_request(:get, "https://custom.tabscanner.example.com/api/2/result/custom_token")
+        stub_request(:get, "https://custom.tabscanner.example.com/api/result/custom_token")
           .to_return(
             status: 200,
             body: JSON.dump({
@@ -301,6 +301,81 @@ RSpec.describe 'Integration Tests' do
         temp_file.close
         temp_file.unlink
       end
+    end
+  end
+
+  describe 'Credits Integration' do
+    it 'completes credits check workflow', :vcr do
+      stub_request(:get, "https://api.tabscanner.com/api/credit")
+        .with(
+          headers: {
+            'apikey' => 'test_integration_key',
+            'User-Agent' => /Tabscanner Ruby Gem/,
+            'Accept' => 'application/json'
+          }
+        )
+        .to_return(
+          status: 200,
+          body: '150',
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
+      credits = Tabscanner.get_credits
+      expect(credits).to eq(150)
+      expect(credits).to be_a(Integer)
+    end
+
+    it 'handles credits authentication errors', :vcr do
+      stub_request(:get, "https://api.tabscanner.com/api/credit")
+        .to_return(
+          status: 401,
+          body: JSON.dump({ 'error' => 'Invalid API key for credits' }),
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
+      expect {
+        Tabscanner.get_credits
+      }.to raise_error(Tabscanner::UnauthorizedError, 'Invalid API key or authentication failed')
+    end
+
+    it 'handles credits server errors', :vcr do
+      stub_request(:get, "https://api.tabscanner.com/api/credit")
+        .to_return(
+          status: 500,
+          body: JSON.dump({ 'error' => 'Credits service unavailable' }),
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
+      expect {
+        Tabscanner.get_credits
+      }.to raise_error(Tabscanner::ServerError, 'Credits service unavailable')
+    end
+
+    it 'works with custom base URL for credits', :vcr do
+      Tabscanner.configure do |config|
+        config.api_key = 'custom_credits_key'
+        config.base_url = 'https://custom.tabscanner.example.com'
+      end
+
+      stub_request(:get, "https://custom.tabscanner.example.com/api/credit")
+        .to_return(
+          status: 200,
+          body: '75',
+          headers: { 'Content-Type' => 'application/json' }
+        )
+
+      credits = Tabscanner.get_credits
+      expect(credits).to eq(75)
+    end
+
+    it 'validates configuration before credits request', :vcr do
+      Tabscanner.configure do |config|
+        config.api_key = nil  # Invalid configuration
+      end
+
+      expect {
+        Tabscanner.get_credits
+      }.to raise_error(Tabscanner::ConfigurationError, 'API key is required')
     end
   end
 

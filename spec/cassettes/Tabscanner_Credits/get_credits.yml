@@ -1,0 +1,33 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.tabscanner.com/api/credit
+    body:
+      encoding: US-ASCII
+      string: ""
+    headers:
+      Apikey:
+      - "<API_KEY>"
+      User-Agent:
+      - Tabscanner Ruby Gem 0.1.0
+      Accept:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Server:
+      - nginx/1.18.0
+      Date:
+      - Sun, 28 Jul 2025 12:00:00 GMT
+      Content-Length:
+      - "3"
+    body:
+      encoding: UTF-8
+      string: "150"
+  recorded_at: Sun, 28 Jul 2025 12:00:00 GMT
+recorded_with: VCR 6.0.0
