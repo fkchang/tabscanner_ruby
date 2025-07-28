@@ -1,0 +1,69 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.tabscanner.com/api/2/process
+    body:
+      encoding: UTF-8
+      string: "-------------RubyMultipartPost-431520e079eb542a352aa126f06133a2\r\nContent-Disposition:
+        form-data; name=\"image\"; filename=\"integration_receipt20250727-66528-5jpoxx.jpg\"\r\nContent-Length:
+        27\r\nContent-Type: image/jpeg\r\nContent-Transfer-Encoding: binary\r\n\r\nintegration_test_image_data\r\n-------------RubyMultipartPost-431520e079eb542a352aa126f06133a2--\r\n"
+    headers:
+      Apikey:
+      - test_integration_key
+      User-Agent:
+      - Tabscanner Ruby Gem 0.1.0
+      Content-Type:
+      - multipart/form-data; boundary=-----------RubyMultipartPost-431520e079eb542a352aa126f06133a2
+      Content-Length:
+      - '347'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 28 Jul 2025 02:56:46 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      Nel:
+      - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+      X-Dns-Prefetch-Control:
+      - 'off'
+      X-Frame-Options:
+      - SAMEORIGIN
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Download-Options:
+      - noopen
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Etag:
+      - W/"48-x1Y6pMWYrD/EX3/vAhqcdlevbu0"
+      Cache-Control:
+      - no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0
+      Cf-Cache-Status:
+      - DYNAMIC
+      Report-To:
+      - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=vW2lKuwy2LPptFGx0b20PQNEn%2FxA9kyf6bbsnDc1UGfVnZC7KsDq2rAjWlLOUqIAhfpl%2BHLdYTb7wMd9ZFYEpR9BUByS7PeHaDROEPtG8nvPug%3D%3D"}]}'
+      Cf-Ray:
+      - 96611aee59e67cef-LAX
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"success":false,"code":400,"message":"ERROR_CLIENT: API key not found"}'
+  recorded_at: Mon, 28 Jul 2025 02:56:46 GMT
+recorded_with: VCR 6.3.1

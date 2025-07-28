@@ -54,7 +54,7 @@ RSpec.describe Tabscanner do
         stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .with(
             headers: {
-              'Authorization' => 'Bearer test_api_key',
+              'apikey' => 'test_api_key',
               'User-Agent' => /Tabscanner Ruby Gem/
             }
           )
@@ -127,7 +127,7 @@ RSpec.describe Tabscanner do
         stub_request(:get, "https://api.tabscanner.com/api/2/result/#{token}")
           .with(
             headers: {
-              'Authorization' => 'Bearer test_api_key',
+              'apikey' => 'test_api_key',
               'User-Agent' => /Tabscanner Ruby Gem/,
               'Accept' => 'application/json'
             }

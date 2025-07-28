@@ -29,7 +29,7 @@ RSpec.describe 'Integration Tests' do
       stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .with(
           headers: {
-            'Authorization' => 'Bearer test_integration_key',
+            'apikey' => 'test_integration_key',
             'User-Agent' => /Tabscanner Ruby Gem/
           }
         )

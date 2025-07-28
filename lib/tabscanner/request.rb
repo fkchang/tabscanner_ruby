@@ -80,7 +80,7 @@ module Tabscanner
         f.request :multipart
         f.request :url_encoded
         f.adapter Faraday.default_adapter
-        f.headers['Authorization'] = "Bearer #{config.api_key}"
+        f.headers['apikey'] = config.api_key
         f.headers['User-Agent'] = "Tabscanner Ruby Gem #{Tabscanner::VERSION}"
       end
     end

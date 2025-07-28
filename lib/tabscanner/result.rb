@@ -41,10 +41,10 @@ module Tabscanner
         end
 
         # Make GET request to result endpoint
-        response = conn.get("/api/2/result/#{token}")
+        response = conn.get("/result/#{token}")
         
         # Debug logging for request/response
-        log_request_response('GET', "/api/2/result/#{token}", response, config) if config.debug?
+        log_request_response('GET', "/result/#{token}", response, config) if config.debug?
         
         result = handle_response(response)
 
@@ -81,7 +81,7 @@ module Tabscanner
       Faraday.new(url: base_url) do |f|
         f.request :url_encoded
         f.adapter Faraday.default_adapter
-        f.headers['Authorization'] = "Bearer #{config.api_key}"
+        f.headers['apikey'] = config.api_key
         f.headers['User-Agent'] = "Tabscanner Ruby Gem #{Tabscanner::VERSION}"
         f.headers['Accept'] = 'application/json'
       end

@@ -21,13 +21,12 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.configure_rspec_metadata!
   
+  
+  
   # Filter sensitive data from cassettes
   config.filter_sensitive_data('<API_KEY>') { ENV['TABSCANNER_API_KEY'] }
   config.filter_sensitive_data('<API_KEY>') do |interaction|
-    auth_header = interaction.request.headers['Authorization']&.first
-    if auth_header && auth_header.start_with?('Bearer ')
-      auth_header.sub('Bearer ', '')
-    end
+    interaction.request.headers['apikey']&.first
   end
 end
 

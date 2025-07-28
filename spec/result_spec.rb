@@ -18,7 +18,7 @@ RSpec.describe Tabscanner::Result do
         stub_request(:get, api_url)
           .with(
             headers: {
-              'Authorization' => 'Bearer test_api_key',
+              'apikey' => 'test_api_key',
               'User-Agent' => /Tabscanner Ruby Gem/,
               'Accept' => 'application/json'
             }
