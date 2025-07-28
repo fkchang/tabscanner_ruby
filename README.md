@@ -1,5 +1,9 @@
 # Tabscanner
 
+[![CI](https://github.com/fkchang/tabscanner_ruby/actions/workflows/ci.yml/badge.svg)](https://github.com/fkchang/tabscanner_ruby/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/tabscanner.svg)](https://badge.fury.io/rb/tabscanner)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Ruby gem for processing receipt images using the Tabscanner API. Extract structured data from receipt images with just a few lines of code.
 
 ## Features
