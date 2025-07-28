@@ -139,7 +139,7 @@ RSpec.describe 'Debug Functionality' do
       logger_output = StringIO.new
       Tabscanner.config.logger = Logger.new(logger_output)
 
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 200,
           body: '{"token": "debug_token"}',
@@ -149,7 +149,7 @@ RSpec.describe 'Debug Functionality' do
       result = Tabscanner::Request.submit_receipt(temp_file.path)
       
       log_content = logger_output.string
-      expect(log_content).to include("HTTP Request: POST process")
+      expect(log_content).to include("HTTP Request: POST /api/2/process")
       expect(log_content).to include("HTTP Response: 200")
       expect(log_content).to include("Response Body:")
       expect(result).to eq("debug_token")
@@ -163,7 +163,7 @@ RSpec.describe 'Debug Functionality' do
       logger_output = StringIO.new
       Tabscanner.config.logger = Logger.new(logger_output)
 
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 200,
           body: '{"token": "no_debug_token"}',
@@ -183,7 +183,7 @@ RSpec.describe 'Debug Functionality' do
         config.debug = true
       end
 
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 422,
           body: '{"error": "Invalid image format"}',
@@ -213,7 +213,7 @@ RSpec.describe 'Debug Functionality' do
     end
 
     let(:token) { 'debug_token_123' }
-    let(:api_url) { "https://api.tabscanner.com/result/#{token}" }
+    let(:api_url) { "https://api.tabscanner.com/api/2/result/#{token}" }
 
     it 'logs polling start and progress when debug enabled' do
       logger_output = StringIO.new
@@ -242,7 +242,7 @@ RSpec.describe 'Debug Functionality' do
       expect(log_content).to include("Starting result polling for token: #{token}")
       expect(log_content).to include("Result still processing for token: #{token}")
       expect(log_content).to include("Result ready for token: #{token}")
-      expect(log_content).to include("HTTP Request: GET result/#{token}")
+      expect(log_content).to include("HTTP Request: GET /api/2/result/#{token}")
       expect(result['merchant']).to eq('Debug Store')
     end
 

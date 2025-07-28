@@ -25,7 +25,7 @@ RSpec.describe Tabscanner::Request do
     context 'with file path input' do
       it 'successfully submits receipt and returns token', :vcr do
         # Mock successful response
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .with(
             headers: {
               'Authorization' => 'Bearer test_api_key',
@@ -52,7 +52,7 @@ RSpec.describe Tabscanner::Request do
     context 'with IO stream input' do
       it 'successfully submits receipt and returns token' do
         # Mock successful response
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "stream123token"}',
@@ -66,7 +66,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'handles StringIO input' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "stringio456"}',
@@ -81,7 +81,7 @@ RSpec.describe Tabscanner::Request do
 
     context 'response token extraction' do
       it 'extracts token from response body' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "extracted_token"}',
@@ -93,7 +93,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'extracts id field as token when token field missing' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 201,
             body: '{"id": "id_as_token"}',
@@ -105,7 +105,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'extracts request_id field as token when others missing' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"request_id": "request_token"}',
@@ -117,7 +117,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises error when no token found in response' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"status": "success"}',
@@ -130,7 +130,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises error for invalid JSON response' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: 'invalid json{',
@@ -145,7 +145,7 @@ RSpec.describe Tabscanner::Request do
 
     context 'error handling' do
       it 'raises UnauthorizedError for 401 status' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 401,
             body: '{"error": "Invalid API key"}',
@@ -158,7 +158,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises ValidationError for 422 status' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 422,
             body: '{"error": "Invalid image format"}',
@@ -171,7 +171,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises ServerError for 500 status' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 500,
             body: '{"error": "Internal server error"}',
@@ -184,7 +184,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises ServerError for 503 status' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 503,
             body: '{"error": "Service unavailable"}',
@@ -197,7 +197,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'raises generic Error for other status codes' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 429,
             body: '{"error": "Rate limit exceeded"}',
@@ -210,7 +210,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'provides default error messages when body parsing fails' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(status: 422, body: 'invalid json')
 
         expect {
@@ -219,7 +219,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'uses raw body as error message for short responses' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(status: 500, body: 'Server overloaded')
 
         expect {
@@ -234,7 +234,7 @@ RSpec.describe Tabscanner::Request do
           config.base_url = 'https://staging.tabscanner.com'
         end
 
-        stub_request(:post, "https://staging.tabscanner.com/process")
+        stub_request(:post, "https://staging.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "staging_token"}',
@@ -256,7 +256,7 @@ RSpec.describe Tabscanner::Request do
       end
 
       it 'includes User-Agent header with gem version' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .with(
             headers: {
               'User-Agent' => "Tabscanner Ruby Gem #{Tabscanner::VERSION}"
@@ -278,7 +278,7 @@ RSpec.describe Tabscanner::Request do
         jpeg_file.write(image_content)
         jpeg_file.rewind
 
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "mime_test"}',
@@ -296,7 +296,7 @@ RSpec.describe Tabscanner::Request do
         png_file.write(image_content)
         png_file.rewind
 
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "png_test"}',
@@ -314,7 +314,7 @@ RSpec.describe Tabscanner::Request do
         unknown_file.write(image_content)
         unknown_file.rewind
 
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "unknown_test"}',

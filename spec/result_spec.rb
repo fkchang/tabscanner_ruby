@@ -10,7 +10,7 @@ RSpec.describe Tabscanner::Result do
 
   describe '.get_result' do
     let(:token) { 'test_token_123' }
-    let(:api_url) { "https://api.tabscanner.com/result/#{token}" }
+    let(:api_url) { "https://api.tabscanner.com/api/2/result/#{token}" }
 
     context 'successful result retrieval' do
       it 'returns data when status is complete', :vcr do
@@ -338,7 +338,7 @@ RSpec.describe Tabscanner::Result do
           config.base_url = 'https://custom-api.example.com'
         end
 
-        custom_url = "https://custom-api.example.com/result/#{token}"
+        custom_url = "https://custom-api.example.com/api/2/result/#{token}"
         stub_request(:get, custom_url)
           .to_return(
             status: 200,

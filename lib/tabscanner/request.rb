@@ -37,12 +37,12 @@ module Tabscanner
       conn = build_connection(config)
 
       # Make the request
-      response = conn.post('process') do |req|
+      response = conn.post('/api/2/process') do |req|
         req.body = build_multipart_body(file_io, filename)
       end
 
       # Debug logging for request/response
-      log_request_response('POST', 'process', response, config) if config.debug?
+      log_request_response('POST', '/api/2/process', response, config) if config.debug?
 
       handle_response(response)
     ensure
@@ -147,6 +147,22 @@ module Tabscanner
     def self.parse_success_response(response)
       begin
         data = JSON.parse(response.body)
+        
+        # Check if the API returned an error even with 200 status
+        if data['success'] == false
+          error_message = data['message'] || "API request failed"
+          case data['code']
+          when 401
+            raise UnauthorizedError.new(error_message, raw_response: build_raw_response_data(response))
+          when 422
+            raise ValidationError.new(error_message, raw_response: build_raw_response_data(response))
+          when 500..599
+            raise ServerError.new(error_message, raw_response: build_raw_response_data(response))
+          else
+            raise Error.new(error_message, raw_response: build_raw_response_data(response))
+          end
+        end
+        
         token = data['token'] || data['id'] || data['request_id']
         
         raise Error, "No token found in response" if token.nil? || token.empty?

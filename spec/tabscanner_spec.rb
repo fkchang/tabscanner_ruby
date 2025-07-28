@@ -51,7 +51,7 @@ RSpec.describe Tabscanner do
 
     context 'integration test with mocked HTTP' do
       it 'successfully processes a receipt from file path to token' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .with(
             headers: {
               'Authorization' => 'Bearer test_api_key',
@@ -69,7 +69,7 @@ RSpec.describe Tabscanner do
       end
 
       it 'successfully processes a receipt from IO stream to token' do
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 200,
             body: '{"token": "io_integration_token"}',
@@ -124,7 +124,7 @@ RSpec.describe Tabscanner do
 
     context 'integration test with mocked HTTP' do
       it 'successfully polls for and retrieves result data' do
-        stub_request(:get, "https://api.tabscanner.com/result/#{token}")
+        stub_request(:get, "https://api.tabscanner.com/api/2/result/#{token}")
           .with(
             headers: {
               'Authorization' => 'Bearer test_api_key',
@@ -182,7 +182,7 @@ RSpec.describe Tabscanner do
 
     it 'completes full workflow from file to parsed data' do
       # Mock submit receipt
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 200,
           body: JSON.dump({ 'token' => test_token }),
@@ -190,7 +190,7 @@ RSpec.describe Tabscanner do
         )
 
       # Mock get result
-      stub_request(:get, "https://api.tabscanner.com/result/#{test_token}")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/#{test_token}")
         .to_return(
           status: 200,
           body: JSON.dump({

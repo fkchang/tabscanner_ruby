@@ -26,7 +26,7 @@ RSpec.describe 'Integration Tests' do
 
     it 'completes full workflow: submit → poll → result', :vcr do
       # Step 1: Submit receipt
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .with(
           headers: {
             'Authorization' => 'Bearer test_integration_key',
@@ -43,7 +43,7 @@ RSpec.describe 'Integration Tests' do
       expect(token).to eq(test_token)
 
       # Step 2: Poll for results (with processing → complete flow)
-      stub_request(:get, "https://api.tabscanner.com/result/#{test_token}")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/#{test_token}")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -90,7 +90,7 @@ RSpec.describe 'Integration Tests' do
 
     it 'handles complete workflow with IO stream input', :vcr do
       # Mock submit with IO
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 200,
           body: JSON.dump({ 'token' => 'io_stream_token' }),
@@ -98,7 +98,7 @@ RSpec.describe 'Integration Tests' do
         )
 
       # Mock result polling
-      stub_request(:get, "https://api.tabscanner.com/result/io_stream_token")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/io_stream_token")
         .to_return(
           status: 200,
           body: JSON.dump({
@@ -120,7 +120,7 @@ RSpec.describe 'Integration Tests' do
 
     it 'handles workflow with multiple polling cycles', :vcr do
       # Mock submit
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 200,
           body: JSON.dump({ 'token' => 'multi_poll_token' }),
@@ -128,7 +128,7 @@ RSpec.describe 'Integration Tests' do
         )
 
       # Mock multiple polling attempts: processing → processing → complete
-      stub_request(:get, "https://api.tabscanner.com/result/multi_poll_token")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/multi_poll_token")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -173,7 +173,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles authentication errors in submit workflow', :vcr do
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 401,
           body: JSON.dump({ 'error' => 'Invalid API key' }),
@@ -186,7 +186,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles validation errors in submit workflow', :vcr do
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 422,
           body: JSON.dump({ 'error' => 'Invalid image format' }),
@@ -199,7 +199,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles server errors in submit workflow', :vcr do
-      stub_request(:post, "https://api.tabscanner.com/process")
+      stub_request(:post, "https://api.tabscanner.com/api/2/process")
         .to_return(
           status: 500,
           body: JSON.dump({ 'error' => 'Internal server error' }),
@@ -212,7 +212,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles processing failures in result workflow', :vcr do
-      stub_request(:get, "https://api.tabscanner.com/result/failed_token")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/failed_token")
         .to_return(
           status: 200,
           body: JSON.dump({
@@ -228,7 +228,7 @@ RSpec.describe 'Integration Tests' do
     end
 
     it 'handles timeout scenarios', :vcr do
-      stub_request(:get, "https://api.tabscanner.com/result/timeout_token")
+      stub_request(:get, "https://api.tabscanner.com/api/2/result/timeout_token")
         .to_return(
           status: 200,
           body: JSON.dump({ 'status' => 'processing' }),
@@ -255,14 +255,14 @@ RSpec.describe 'Integration Tests' do
       temp_file.rewind
 
       begin
-        stub_request(:post, "https://custom.tabscanner.example.com/process")
+        stub_request(:post, "https://custom.tabscanner.example.com/api/2/process")
           .to_return(
             status: 200,
             body: JSON.dump({ 'token' => 'custom_token' }),
             headers: { 'Content-Type' => 'application/json' }
           )
 
-        stub_request(:get, "https://custom.tabscanner.example.com/result/custom_token")
+        stub_request(:get, "https://custom.tabscanner.example.com/api/2/result/custom_token")
           .to_return(
             status: 200,
             body: JSON.dump({
@@ -316,7 +316,7 @@ RSpec.describe 'Integration Tests' do
       temp_file.rewind
 
       begin
-        stub_request(:post, "https://api.tabscanner.com/process")
+        stub_request(:post, "https://api.tabscanner.com/api/2/process")
           .to_return(
             status: 422,
             body: JSON.dump({ 'error' => 'Debug mode validation error' }),
