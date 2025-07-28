@@ -10,13 +10,13 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Ruby gem for processing receipt images using the Tabscanner API"
   spec.description = "A Ruby gem that provides a simple interface for submitting receipt images to the Tabscanner API and retrieving parsed receipt data. Features include automatic polling, comprehensive error handling, debug mode, and environment-based configuration."
-  spec.homepage = "https://github.com/fkchang/tabscanner"
+  spec.homepage = "https://github.com/fkchang/tabscanner_ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/fkchang/tabscanner"
-  spec.metadata["changelog_uri"] = "https://github.com/fkchang/tabscanner/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/fkchang/tabscanner_ruby"
+  spec.metadata["changelog_uri"] = "https://github.com/fkchang/tabscanner_ruby/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

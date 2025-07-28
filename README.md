@@ -6,6 +6,7 @@ A Ruby gem for processing receipt images using the Tabscanner API. Extract struc
 
 - 📸 **Image Processing**: Submit receipt images via file path or IO stream
 - 🔄 **Automatic Polling**: Built-in polling for processing results with timeout handling
+- 💳 **Credit Monitoring**: Check remaining API credits to stay within plan limits
 - 🛡️ **Error Handling**: Comprehensive error handling with detailed debug information
 - 🔧 **Configurable**: Environment variables and programmatic configuration
 - 🐛 **Debug Support**: Optional debug logging for troubleshooting
@@ -174,6 +175,47 @@ receipt_files.each do |file_path|
   rescue => e
     puts "❌ Error processing #{file_path}: #{e.message}"
   end
+end
+```
+
+### Credit Monitoring
+
+Check your remaining API credits to stay within your plan limits:
+
+```ruby
+# Check remaining credits
+credits = Tabscanner.get_credits
+puts "Remaining credits: #{credits}"
+
+# Basic usage monitoring
+if credits < 10
+  puts "Warning: Low credit balance!"
+end
+```
+
+#### Credits with Error Handling
+
+```ruby
+begin
+  credits = Tabscanner.get_credits
+  
+  case credits
+  when 0
+    puts "⚠️  No credits remaining - please upgrade your plan"
+  when 1..9
+    puts "⚠️  Low credits (#{credits}) - consider upgrading soon"
+  when 10..49
+    puts "ℹ️  Credits getting low (#{credits})"
+  else
+    puts "✅ #{credits} credits available"
+  end
+
+rescue Tabscanner::UnauthorizedError => e
+  puts "❌ Invalid API key: #{e.message}"
+rescue Tabscanner::ServerError => e
+  puts "❌ Service error: #{e.message}"
+rescue Tabscanner::Error => e
+  puts "❌ Error checking credits: #{e.message}"
 end
 ```
 
@@ -429,6 +471,10 @@ token = Tabscanner.submit_receipt(file_path_or_io)
 # @param timeout [Integer] Maximum wait time in seconds (default: 15)
 # @return [Hash] Parsed receipt data
 result = Tabscanner.get_result(token, timeout: 30)
+
+# Check remaining API credits
+# @return [Integer] Number of remaining credits
+credits = Tabscanner.get_credits
 ```
 
 ### Response Format
